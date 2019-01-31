@@ -23,6 +23,10 @@ router.get('/start', function(req, res, next)
     if(err) {console.log(err);}
     else
     {
+      for(var i in rows)
+      {
+        if(rows[i].username == "ms") {console.log(i);}
+      }
       console.log(rows);
     }
   });
