@@ -12,11 +12,12 @@ var sqlconn = mysql.createConnection({
 });
 sqlconn.connect();
 
-/** ElasticSearch test *
+/** ElasticSearch test */
 var client = new elasticsearch.Client({
   host: 'localhost:9200',
   log: 'trace'
 });
+var resultFile = require('../result_test.json');
 
 client.ping({
   // ping usually has a 3000ms timeout
@@ -28,12 +29,13 @@ client.ping({
     console.log('All is well');
   }
 });
-*/
+
 
 /** Home Page */
 router.get(['/', '/start'], function(req, res, next) {
   res.render('index', { title: 'Express' });
   //path.join(__dirname, '../public', 'index.html');
+
 });
 
 /** Login Page */
@@ -113,9 +115,42 @@ router.post('/register', function(req, res, next) // POST register page
 /** Search & Result Page */
 router.get('/search', function(req, res, next)  // GET search page
 {
-  // search data thru elastic search
   //path.join(__dirname, '../public', 'index.html');
   res.send('search page');
+});
+router.post('/search', function(req, res, next) // POST search page
+{
+  /** Get submitted file */
+  //var submittedFile = req.body.submitted;
+
+  /** Send submitted file to models */
+
+  /** Recieve and store result file */
+  client.create({
+    index: 'entity',
+    type: 'review',
+    id: '2',
+    body: resultFile
+  }, function(err, response, status)
+  {
+    if(err) {console.log('resultFile put error!'), console.log(err);}
+    else
+    {
+      console.log('==Response==');
+      console.log(response);
+      console.log('==Status==');
+      console.log(status);
+    }
+  });
+   
+  /** Search data thru elastic search */
+  var searchData = 'mskim'; // change to searchData = req.query.searchData;
+  const response = client.search({
+    index: 'entity',
+    q: `reviewID:${searchData}`
+  });
+
+  /** Show result data */
 });
 
 /** undefined routing handling */
