@@ -28,7 +28,7 @@ client.ping({
   } else {
     console.log('All is well');
   }
-});
+}); 
 
 
 /** Home Page */
@@ -152,6 +152,28 @@ router.post('/search', function(req, res, next) // POST search page
 
   /** Show result data */
 });
+
+/** Python test *
+router.get('/pythontest', function(req, res)
+{
+  // using spawn instead of exec, prefer a stream over a buffer
+  // to avoid maxBuffer issue
+  var spawn = require("child_process").spawn;
+  var process = spawn('python', ['./compute_input.py']);
+  var data = [100, 10, 100, 1000];
+  var dataString = '';
+  process.stdout.on('data', function(data){
+    dataString += data.toString();
+  });
+  process.stdout.on('end', function(){
+    console.log('Sum of numbers=', dataString);
+  });
+  process.stdin.write(JSON.stringify(data));
+  process.stdin.end();
+  res.send(data);
+  console.log(process);
+});
+*/
 
 /** undefined routing handling */
 router.get('/*', function(req, res)

@@ -26,6 +26,8 @@ app.locals.pretty = true;
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// 나중에 쓸 http-proxy-middleware 추가하기
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
