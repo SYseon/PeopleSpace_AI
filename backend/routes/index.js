@@ -11,7 +11,7 @@ var resultFile = require('../result_test.json');
 
 /** Home Page */
 router.get(['/', '/start', '/welcome'], function(req, res, next) {
-  if(req.session.userLogin) // login already
+  if(req.session.bIsLogined) // login already
   {
     res.render('index', { title: 'Express' });
   }
@@ -30,6 +30,11 @@ router.get('/search', function(req, res, next)  // GET search page
 });
 router.post('/search', function(req, res, next) // POST search page
 {
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
   /** Get submitted file */
   //var submittedFile = req.body.submitted;
 

@@ -49,7 +49,7 @@ router.post('/login', function(req, res, next)  // POST login page
             if(hash == rows[i].accountPassword) // Login success
             {
               console.log('login success');
-              req.session.userLogin = true;
+              req.session.bIsLogined = true;
               res.redirect('/');
             }
             else {console.log('login failure');}
@@ -64,7 +64,7 @@ router.post('/login', function(req, res, next)  // POST login page
 /** Logout page */
 router.get('/logout', function(req, res)
 {
-  delete req.session.userLogin;
+  delete req.session.bIsLogined;
   req.session.save(function() {res.redirect('/');})
 });
 
