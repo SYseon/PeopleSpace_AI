@@ -10,10 +10,16 @@ var client = new elasticsearch.Client({
 var resultFile = require('../result_test.json');
 
 /** Home Page */
-router.get(['/', '/start'], function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get(['/', '/start', '/welcome'], function(req, res, next) {
+  if(req.session.userLogin) // login already
+  {
+    res.render('index', { title: 'Express' });
+  }
+  else
+  {
+    res.send('<h1>you should login</h1>');
+  }
   //path.join(__dirname, '../public', 'index.html');
-
 });
 
 /** Search & Result Page */

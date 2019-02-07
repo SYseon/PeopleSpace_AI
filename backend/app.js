@@ -4,6 +4,7 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -23,12 +24,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended: false}));
 app.locals.pretty = true;
+app.use(session({
+  secret: '123456dfewnn13!#edf',
+  resave: false,
+  saveUninitialized: true,
+  //cookie: { secure: true }
+}));
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 
 // 나중에 쓸 http-proxy-middleware 추가하기
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

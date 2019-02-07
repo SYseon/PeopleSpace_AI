@@ -49,6 +49,7 @@ router.post('/login', function(req, res, next)  // POST login page
             if(hash == rows[i].accountPassword) // Login success
             {
               console.log('login success');
+              req.session.userLogin = true;
               res.redirect('/');
             }
             else {console.log('login failure');}
@@ -58,6 +59,13 @@ router.post('/login', function(req, res, next)  // POST login page
     }
   });
   res.send('login page'); // delete this later
+});
+
+/** Logout page */
+router.get('/logout', function(req, res)
+{
+  delete req.session.userLogin;
+  req.session.save(function() {res.redirect('/');})
 });
 
 /** Register Page */
