@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 var usersRouter = require('./routes/users');
 
 var app = express();
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.locals.pretty = true;
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 
 // 나중에 쓸 http-proxy-middleware 추가하기
