@@ -16,3 +16,4 @@ SQL
 
 Security
 	https://blog.naver.com/sayul2/221190713846
+	https://blog.naver.com/donggyu_00/221338274447
