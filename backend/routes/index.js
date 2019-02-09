@@ -34,7 +34,7 @@ router.get('/search', function(req, res, next)  // GET search page
     return false;
   }
   //path.join(__dirname, '../public', 'index.html');
-  res.send('search page');
+  res.render('search');
 });
 router.post('/search', function(req, res, next) // POST search page
 {
@@ -44,12 +44,13 @@ router.post('/search', function(req, res, next) // POST search page
     res.redirect('/');
     return false;
   }
-  /** Get submitted file */
-  //var submittedFile = req.body.submitted;
+  // Get submitted file
+  var submittedFile = req.body.submittedFile;
+  console.log(submittedFile);
 
   /** Send submitted file to models */
 
-  /** Recieve and store result file */
+  /** Recieve and store result file *
   client.create({
     index: 'entity',
     type: 'review',
@@ -67,7 +68,7 @@ router.post('/search', function(req, res, next) // POST search page
     }
   });
    
-  /** Search data thru elastic search */
+  /** Search data thru elastic search *
   var searchData = 'mskim'; // change to searchData = req.query.searchData;
   const response = client.search({
     index: 'entity',
