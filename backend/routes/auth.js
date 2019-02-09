@@ -25,14 +25,15 @@ router.get('/', function(req, res, next) {
 router.get('/login', function(req, res, next) // GET login page
 {
   //path.join(__dirname, '../public', 'index.html');
-  res.send('login page');
+  //res.send('login page');
+  res.render('login');
 });
 router.post('/login', function(req, res, next)  // POST login page
 {
   var selectQuery = 'SELECT * FROM dbtest'; // This will be changed to real table name
   // Get input account data from web
-  var inputID = "testID"; // change to "inputID = req.body.username";
-  var inputPW = "testPW"; // change to "inputPW = req.body.password";
+  var inputID = req.body.accountId; // change to "inputID = req.body.accountId";
+  var inputPW = req.body.accountPassword; // change to "inputPW = req.body.accountPassword";
   // Login
   sqlconn.query(selectQuery, function(err, rows, fields)
   {
@@ -44,27 +45,45 @@ router.post('/login', function(req, res, next)  // POST login page
       {
         if(inputID == rows[i].accountId)
         {
+          var accountData = rows[i];
           hasher({password: inputPW, salt: rows[i].salt}, function(err, pass, salt, hash)
           {
-            if(hash == rows[i].accountPassword) // Login success
+            if(hash == accountData.accountPassword) // Login success
             {
               console.log('login success');
               req.session.bIsLogined = true;
+              req.session.loginAccount = inputID;
               res.redirect('/');
             }
-            else {console.log('login failure');}
+            else {console.log('login failure'); res.redirect('/auth/login');}
           });
         }
       }
     }
   });
-  res.send('login page'); // delete this later
 });
 
 /** Logout page */
 router.get('/logout', function(req, res)
 {
+  // Access control
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
+  res.render('logout');
+});
+router.post('/logout', function(req, res)
+{
+  // Access control
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
   delete req.session.bIsLogined;
+  delete req.session.loginAccount;
   req.session.save(function() {res.redirect('/');})
 });
 
@@ -72,35 +91,26 @@ router.get('/logout', function(req, res)
 router.get('/register', function(req, res, next)  // GET register page
 {
   //path.join(__dirname, '../public', 'index.html');
-  res.send("register page");
+  res.render('register');
 });
 router.post('/register', function(req, res, next) // POST register page
 {
-  var inputID = "testID"; // change to inputID = req.body.username;
-  var inputPW = "testPW"; // change to inputPW = req.body.password;
+  var inputID = req.body.accountId; // change to inputID = req.body.accountId;
+  var inputPW = req.body.accountPassword; // change to inputPW = req.body.accountPassword;
   var selectQuery = 'SELECT * FROM dbtest';
   var insertQuery = 'INSERT INTO dbtest (accountId, accountPassword, salt) VALUES(?, ?, ?)'; // This will be changed to real table name
   // checking if there's no same name user
   sqlconn.query(selectQuery, function(err, rows, fields)
   {
-    var bIsUniqueID = true;
-    for(var i in rows)
+    hasher({password: inputPW}, function(err, pass, salt, hash)
     {
-      if(inputID == rows[i].username) {bIsUniqueID = false; break;}
-    }
-    // if there's no same user
-    if(bIsUniqueID)
-    {
-      console.log('there is no same user');
-      hasher({password: inputPW}, function(err, pass, salt, hash)
-      {        
-        sqlconn.query(insertQuery, [inputID, hash, salt], function(err, result, fields)
-        {
-          if(err) {console.log(err), res.status(500).send('Internal Server Error - Register');}
-          else {res.send(`register complete!<a href= '/login'>login</a>`);}
-        });
+      var insertData = [inputID, hash, salt];
+      sqlconn.query(insertQuery, insertData, function(err, result, fields)
+      {
+        if(err) {console.log(err), res.status(500).send('Internal Server Error - Register');} // if there is the same Id in db
+        else {res.send(`register complete!<a href= '/login'>login</a>`);}
       });
-    }
+    });
   });
 });
 

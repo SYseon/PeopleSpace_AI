@@ -13,11 +13,13 @@ var resultFile = require('../result_test.json');
 router.get(['/', '/start', '/welcome'], function(req, res, next) {
   if(req.session.bIsLogined) // login already
   {
-    res.render('index', { title: 'Express' });
+    res.render('welcome', { title: req.session.loginAccount });
   }
   else
   {
-    res.send('<h1>you should login</h1>');
+    //res.send('<h1>you should login</h1>');
+    /** pug test */
+    res.render('index', {title : 'you should login first'});
   }
   //path.join(__dirname, '../public', 'index.html');
 });
@@ -25,11 +27,18 @@ router.get(['/', '/start', '/welcome'], function(req, res, next) {
 /** Search & Result Page */
 router.get('/search', function(req, res, next)  // GET search page
 {
+  // Access control
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
   //path.join(__dirname, '../public', 'index.html');
   res.send('search page');
 });
 router.post('/search', function(req, res, next) // POST search page
 {
+  // Access control
   if(!req.session.bIsLogined)
   {
     res.redirect('/');
