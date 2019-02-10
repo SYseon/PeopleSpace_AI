@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var elasticsearch = require('elasticsearch');
 
+var path = require('path');
+
 /** ElasticSearch test */
 var client = new elasticsearch.Client({
   host: 'localhost:9200',
@@ -13,19 +15,30 @@ var resultFile = require('../result_test.json');
 router.get(['/', '/start', '/welcome'], function(req, res, next) {
   if(req.session.bIsLogined) // login already
   {
-    res.render('welcome', { title: req.session.loginAccount });
+    //res.render('welcome', { title: req.session.loginAccount });
+    res.redirect('/dashboard');
   }
   else
   {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
     //res.send('<h1>you should login</h1>');
     /** pug test */
-    res.render('index', {title : 'you should login first'});
+    //res.render('index', {title : 'you should login first'});
   }
-  //path.join(__dirname, '../public', 'index.html');
+  //res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
+router.get('/dashboard', function(req, res, next)
+{
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+})
 
 /** Search & Result Page */
-router.get('/search', function(req, res, next)  // GET search page
+router.get('/summary', function(req, res, next)  // GET search page
 {
   // Access control
   if(!req.session.bIsLogined)
@@ -33,10 +46,10 @@ router.get('/search', function(req, res, next)  // GET search page
     res.redirect('/');
     return false;
   }
-  //path.join(__dirname, '../public', 'index.html');
-  res.render('search');
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  //res.render('search');
 });
-router.post('/search', function(req, res, next) // POST search page
+router.post('/summary', function(req, res, next) // POST search page
 {
   // Access control
   if(!req.session.bIsLogined)

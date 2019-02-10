@@ -4,6 +4,7 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var bkfd2Password = require('pbkdf2-password');
 var hasher = bkfd2Password();
+var path = require('path');
 
 router.use(bodyParser.urlencoded({extended: false}));
 
@@ -24,27 +25,37 @@ router.get('/', function(req, res, next) {
 /** Login Page */
 router.get('/login', function(req, res, next) // GET login page
 {
-  //path.join(__dirname, '../public', 'index.html');
+  // Access control
+  if(req.session.bIsLogined)
+  {
+    res.redirect('/dashboard');
+    return false;
+  }
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  console.log('login page');
   //res.send('login page');
-  res.render('login');
+  //res.render('login');
 });
+
 router.post('/login', function(req, res, next)  // POST login page
 {
   var selectQuery = 'SELECT * FROM dbtest'; // This will be changed to real table name
   // Get input account data from web
-  var inputID = req.body.accountId; // change to "inputID = req.body.accountId";
-  var inputPW = req.body.accountPassword; // change to "inputPW = req.body.accountPassword";
+  var inputID = req.body.email; // change to "inputID = req.body.accountId";
+  var inputPW = req.body.password; // change to "inputPW = req.body.accountPassword";
   // Login
   sqlconn.query(selectQuery, function(err, rows, fields)
   {
     if(err) {console.log(err);}
     else
     {
+      var bIsIDCorrect = false;
       // check ID & PW for login
       for(var i in rows)
       {
         if(inputID == rows[i].accountId)
         {
+          bIsIDCorrect = true;
           var accountData = rows[i];
           hasher({password: inputPW, salt: rows[i].salt}, function(err, pass, salt, hash)
           {
@@ -53,27 +64,18 @@ router.post('/login', function(req, res, next)  // POST login page
               console.log('login success');
               req.session.bIsLogined = true;
               req.session.loginAccount = inputID;
-              res.redirect('/');
+              res.redirect('/dashboard');
             }
-            else {console.log('login failure'); res.redirect('/auth/login');}
+            else {console.log('login failure'); res.send(`alert('do not match!')`);}
           });
         }
       }
+      if(!bIsIDCorrect) {console.log('login failure'); res.redirect('/auth/login');}
     }
   });
 });
 
 /** Logout page */
-router.get('/logout', function(req, res)
-{
-  // Access control
-  if(!req.session.bIsLogined)
-  {
-    res.redirect('/');
-    return false;
-  }
-  res.render('logout');
-});
 router.post('/logout', function(req, res)
 {
   // Access control
@@ -90,13 +92,15 @@ router.post('/logout', function(req, res)
 /** Register Page */
 router.get('/register', function(req, res, next)  // GET register page
 {
-  //path.join(__dirname, '../public', 'index.html');
-  res.render('register');
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  console.log('register page');
+  //res.render('register');
 });
+
 router.post('/register', function(req, res, next) // POST register page
 {
-  var inputID = req.body.accountId; // change to inputID = req.body.accountId;
-  var inputPW = req.body.accountPassword; // change to inputPW = req.body.accountPassword;
+  var inputID = req.body.email; // change to inputID = req.body.accountId;
+  var inputPW = req.body.password; // change to inputPW = req.body.accountPassword;
   var selectQuery = 'SELECT * FROM dbtest';
   var insertQuery = 'INSERT INTO dbtest (accountId, accountPassword, salt) VALUES(?, ?, ?)'; // This will be changed to real table name
   // checking if there's no same name user
@@ -108,7 +112,7 @@ router.post('/register', function(req, res, next) // POST register page
       sqlconn.query(insertQuery, insertData, function(err, result, fields)
       {
         if(err) {console.log(err), res.status(500).send('Internal Server Error - Register');} // if there is the same Id in db
-        else {res.send(`register complete!<a href= '/login'>login</a>`);}
+        else {res.redirect('/auth/login');}
       });
     });
   });
