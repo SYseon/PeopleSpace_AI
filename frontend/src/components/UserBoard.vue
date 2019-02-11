@@ -81,7 +81,9 @@
 
         logout(){
           if(confirm('Do you want to Logout?')){
-            window.location.pathname = '/'
+            //window.location.pathname = '/'
+            this.$http.post('http://localhost:3000/auth/logout');
+
           } else{
           }
         },

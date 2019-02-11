@@ -51,8 +51,9 @@
 
                 if (this.password === this.password_confirmation && this.password.length > 0)
                 {
-                    let url = "http://localhost:3000/register"
-                    if(this.is_admin != null || this.is_admin == 1) url = "http://localhost:3000/register-admin"
+                    let url = "http://localhost:3000/auth/register"
+                    //if(this.is_admin != null || this.is_admin == 1) url = "http://localhost:3000/register-admin"
+
                     this.$http.post(url, {
                         name: this.name,
                         email: this.email,
@@ -69,7 +70,9 @@
                                 this.$router.push(this.$route.params.nextUrl)
                             }
                             else{
-                                this.$router.push('/login')
+                                this.$router.push('/auth/login')
+                                //window.location.pathname = '/auth/login';
+
                             }
                         }
                     })
