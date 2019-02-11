@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Start from '@/components/Start'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
 import UserBoard from '@/components/UserBoard'
 import Admin from '@/components/Admin'
 import Summary from '@/components/Summary'
+import Search from '@/components/Search'
 
 Vue.use(Router)
 
@@ -14,17 +15,17 @@ let router = new Router({
     routes: [
         {
             path: '/',
-            name: 'HelloWorld',
-            component: HelloWorld
+            name: 'Start',
+            component: Start
         },
         {
-            path: '/auth/login',
+            path: '/auth/login',    ////////////////////////// ##
             name: 'login',
             component: Login,
 
         },
         {
-            path: '/auth/register',
+            path: '/auth/register', ////////////////////////// ##
             name: 'register',
             component: Register,
             // meta: {
@@ -55,7 +56,9 @@ let router = new Router({
             //     requiresAuth: true,
             //     is_admin : true
             // }
-        }
+        },
+        //{ path: '*', redirect: '/'},  ////////////////////////// ##
+        { path: '/search', name: 'search', component: Search }
     ]
 })
 
@@ -90,7 +93,7 @@ router.beforeEach((to, from, next) => {
     // }else {
     //     next()
     // }
-    const publicPages = ['/','/auth/login','/auth/register'];
+    const publicPages = ['/','/auth/login','/auth/register'];   ////////////////////////// ##
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 

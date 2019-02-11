@@ -17,13 +17,10 @@
             </div>
             <br>
             <div class = "form-group">
-                <button class="btn-login" type="submit" @click="handleSubmit">
+                <button class="btn-login" type="submit" v-on:click="login()"> <!---------------------- ## -------------------------->
                     Login
                 </button>
-                <button class="btn-register" v-on:click="register()">Register</button>
-                <router-link to="/auth/register" class="btn-register">
-                    Register
-                </router-link>
+                <button class="btn-register" v-on:click="register()">Register</button> <!---------------------- ## -------------------------->
             </div>
             <br>
         </form>
@@ -33,6 +30,7 @@
 
 <script>
     export default {
+        props : ["nextUrl"],
         data(){
             return {
                 email : "",
@@ -40,6 +38,7 @@
             }
         },
         methods : {
+          /*
             handleSubmit(e){
                 e.preventDefault()
                 if (this.password.length > 0) {
@@ -58,23 +57,22 @@
                                 this.$router.push(this.$route.params.nextUrl)
                             }
                             else {
-                                if(is_admin== 1){
-                                    //this.$router.push('/auth/login')
-                                }
-                                else {
-                                    //this.$router.push('/auth/login')
-                                }
+                                this.$router.push('/dashboard');
                             }
                         }
-                        window.location.href= '/auth/login';
                     })
                     .catch(function (error) {
                         console.error(error.response);
                     });
                 }
+            },*/
+            login() { ///////////////////////////////////////////// ##
+              this.$http.post('http://localhost:3000/auth/login', {
+                  email: this.email,
+                  password: this.password
+              })
             },
-
-            register() {
+            register() {  /////////////////////////////////////////// ##
                 window.location.href= '/auth/register';
             }
         }

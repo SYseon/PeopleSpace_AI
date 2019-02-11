@@ -75,13 +75,13 @@
           }
           else{
             /* go to SearchPage */
-            window.location.pathname = '/summary'
+            window.location.pathname = '/search'  ////////////////////////// ##
           }
         },
 
         logout(){
           if(confirm('Do you want to Logout?')){
-            this.$http.post('http://localhost:3000/auth/logout')
+            this.$http.post('http://localhost:3000/auth/logout'); ////////////////////////// ##
           } else{
           }
         },
