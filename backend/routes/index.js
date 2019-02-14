@@ -1,8 +1,12 @@
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
 var elasticsearch = require('elasticsearch');
+var multer = require('multer');
 
 var path = require('path');
+var upload = multer({dest: 'uploads/'});
+router.use(bodyParser.urlencoded({extended: false}));
 
 /** ElasticSearch test */
 var client = new elasticsearch.Client({
@@ -38,7 +42,7 @@ router.get('/dashboard', function(req, res, next)
 })
 
 /** Search & Result Page */
-router.get('/summary', function(req, res, next)  // GET search page
+router.get('/summary', function(req, res, next)  // GET summary page
 {
   // Access control
   if(!req.session.bIsLogined)
@@ -49,7 +53,7 @@ router.get('/summary', function(req, res, next)  // GET search page
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
   //res.render('search');
 });
-router.post('/summary', function(req, res, next) // POST search page
+router.post('/summary', function(req, res, next) // POST summary page
 {
   // Access control
   if(!req.session.bIsLogined)
@@ -89,6 +93,27 @@ router.post('/summary', function(req, res, next) // POST search page
   });
 
   /** Show result data */
+});
+router.get('/search', function(req, res, next)  // GET search page
+{
+  // Access control
+  if(!req.session.bIsLogined)
+  {
+    res.redirect('/');
+    return false;
+  }
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+  //res.render('search');
+});
+
+router.post('/single-file', upload.single('file'), function(req, res, next)
+{
+  var data = req.file;
+  console.log('req.body.action: '+req.body.action);
+  console.log('req.file: '+data);
+  console.log('name: '+data.filename);
+  console.log('name: '+req.body.name);
+  res.send('');
 });
 
 /** Python test *

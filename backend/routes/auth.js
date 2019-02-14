@@ -64,7 +64,7 @@ router.post('/login', function(req, res, next)  // POST login page
               console.log('login success');
               req.session.bIsLogined = true;
               req.session.loginAccount = inputID;
-              res.redirect('/dashboard');
+              req.session.save(function() {res.redirect('/dashboard');})
             }
             else {console.log('login failure'); res.send(`alert('do not match!')`);}
           });
@@ -86,7 +86,7 @@ router.post('/logout', function(req, res)
   }
   delete req.session.bIsLogined;
   delete req.session.loginAccount;
-  req.session.save(function() {res.redirect('/');})
+  req.session.save(function() {res.redirect('/dashboard');})
 });
 
 /** Register Page */
