@@ -3,6 +3,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var elasticsearch = require('elasticsearch');
 var multer = require('multer');
+var fs = require('fs');
 
 var path = require('path');
 var upload = multer({dest: 'uploads/'});
@@ -108,12 +109,31 @@ router.get('/search', function(req, res, next)  // GET search page
 
 router.post('/single-file', upload.single('file'), function(req, res, next)
 {
+  // get new file
   var data = req.file;
-  console.log('req.body.action: '+req.body.action);
   console.log('req.file: '+data);
   console.log('name: '+data.filename);
   console.log('name: '+req.body.name);
   res.send('');
+
+  // remove previous file
+  var currentPath = path.join(__dirname, '../uploads');
+  fs.readdir(currentPath, function(err, files)
+  {
+    if(err) {console.log(err);}
+    else
+    {
+      for(var i in files)
+      {
+        if(files[i] == data.filename) {break;}  // except current file
+        fs.unlink(currentPath+'\\'+files[i], function(err)
+        {
+          if(err) {console.log(err);}
+          else {console.log('succesfully deleted!');}
+        });
+      }
+    }
+  });
 });
 
 /** Python test *
