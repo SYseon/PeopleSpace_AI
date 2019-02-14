@@ -7,7 +7,7 @@
 
       <div class = "cell">
         <label class="bglabel-file"><span class="label-file"></span>
-          <input type = "file" id="file" ref="file" v-on:change="handlerFileUpload()"/>
+          <input type = "file" id="file" ref="file" v-on:change="handleFileUpload()"/>
         </label>
         <button class="btn-submit" v-on:click="submitFile()">Submit</button>
         <button class="btn-start" v-on:click="gotoSearch()">Start</button>
@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
     export default {
 
       data(){
@@ -52,11 +54,10 @@
               }
             }).then(function(){
               console.log('File submitted');
+              alert("File Submitted!");
             }).catch(function(){
               console.log('File submit Failed');
             });
-
-            alert("File Submitted!");
 
           }
         },
