@@ -4,6 +4,7 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var bkfd2Password = require('pbkdf2-password');
 var hasher = bkfd2Password();
+var moment = require('moment');
 var path = require('path');
 
 router.use(bodyParser.urlencoded({extended: false}));
@@ -39,9 +40,9 @@ router.get('/login', function(req, res, next) // GET login page
 
 router.post('/login', function(req, res, next)  // POST login page
 {
-  var selectQuery = 'SELECT * FROM dbtest'; // This will be changed to real table name
+  var selectQuery = 'SELECT * FROM users'; // This will be changed to real table name
   // Get input account data from web
-  var inputID = req.body.email; // change to "inputID = req.body.accountId";
+  var inputID = req.body.email; // change to "inputID = req.body.email";
   var inputPW = req.body.password; // change to "inputPW = req.body.accountPassword";
   // Login
   sqlconn.query(selectQuery, function(err, rows, fields)
@@ -53,13 +54,13 @@ router.post('/login', function(req, res, next)  // POST login page
       // check ID & PW for login
       for(var i in rows)
       {
-        if(inputID == rows[i].accountId)
+        if(inputID == rows[i].email)
         {
           bIsIDCorrect = true;
           var accountData = rows[i];
           hasher({password: inputPW, salt: rows[i].salt}, function(err, pass, salt, hash)
           {
-            if(hash == accountData.accountPassword) // Login success
+            if(hash == accountData.userPassword) // Login success
             {
               console.log('login success');
               req.session.bIsLogined = true;
@@ -101,14 +102,16 @@ router.post('/register', function(req, res, next) // POST register page
 {
   var inputID = req.body.email; // change to inputID = req.body.accountId;
   var inputPW = req.body.password; // change to inputPW = req.body.accountPassword;
-  var selectQuery = 'SELECT * FROM dbtest';
-  var insertQuery = 'INSERT INTO dbtest (accountId, accountPassword, salt) VALUES(?, ?, ?)'; // This will be changed to real table name
+  var inputName = req.body.name;
+  var creationDate = moment().format('YYYY-MM-DD HH:mm:ss');
+  var selectQuery = 'SELECT * FROM users';
+  var insertQuery = 'INSERT INTO users (email, userPassword, userName, creationDate, salt) VALUES(?, ?, ?, ?, ?)'; // This will be changed to real table name
   // checking if there's no same name user
   sqlconn.query(selectQuery, function(err, rows, fields)
   {
     hasher({password: inputPW}, function(err, pass, salt, hash)
     {
-      var insertData = [inputID, hash, salt];
+      var insertData = [inputID, hash, inputName, creationDate, salt];
       sqlconn.query(insertQuery, insertData, function(err, result, fields)
       {
         if(err) {console.log(err), res.status(500).send('Internal Server Error - Register');} // if there is the same Id in db
