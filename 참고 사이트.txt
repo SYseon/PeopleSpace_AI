@@ -6,6 +6,7 @@ express
 
 elasticsearch
 	https://blog.naver.com/phoenixqq/221373774110
+	https://www.tutorialspoint.com/elasticsearch/elasticsearch_aggregations.htm
 
 reactivesearch
 	https://github.com/aayush-bhardwaj/FlashCard/tree/master/React
