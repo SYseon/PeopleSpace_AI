@@ -17,10 +17,11 @@
             </div>
             <br>
             <div class = "form-group">
-                <button class="btn-login" type="submit" v-on:click="login()">
-                    Login
-                </button>
-                <button class="btn-register" v-on:click="register()">Register</button>
+
+            <button class="btn-login" type="submit" v-on:click="login()">
+                Login
+            </button>
+            <button class="btn-register" v-on:click="register()">Register</button>
 
             </div>
             <br>
@@ -38,6 +39,7 @@
             }
         },
         methods : {
+
             // handleSubmit(e){
             //     e.preventDefault()
             //     if (this.password.length > 0) {
@@ -83,6 +85,8 @@
 
             register() {
               window.location.href = '/auth/register';
+
+
             }
         }
     }
