@@ -21,7 +21,6 @@ Security
 
 Auth
 	https://www.youtube.com/playlist?list=PLuHgQVnccGMCHjWIDStjaZA2ZR-jwq-WU
-
-
+	
 AWS
 	https://www.youtube.com/watch?v=QeGL4om9m-Q
