@@ -1,58 +1,64 @@
 <template>
-  <div id="app">
-    <reactive-base app="good-books-yj" credentials="gBgUqs2tV:3456f3bf-ea9e-4ebc-9c93-08eb13e5c87c" >
-      <div class="filters-container">
+  <div>
+    <reactive-base
+      app = "entity"
+      url = "https://search-entity-vq4u4jfn4vzumcvld7xprjldzu.us-east-1.es.amazonaws.com/"
+    >
+
+      <div class = "filters-container">
+        <data-search
+          componentId = "SearchKeyword"
+          dataField = "keyword"
+          title = "Search Keyword"
+          class = "filter"
+          />
         <multi-list
-          componentId="Authors"
-          dataField="authors.raw"
-          class="filter"
-          title="Select Authors"
-          selectAllLabel="All Authors"
-        />
-        <single-range
-          componentId="Ratings"
-          dataField="average_rating"
-          :data="[
-            { 'start': 0, 'end': 3, 'label': 'Rating < 3' },
-            { 'start': 3, 'end': 4, 'label': 'Rating 3 to 4' },
-            { 'start': 4, 'end': 5, 'label': 'Rating > 4' }
-          ]"
-          title="Book Ratings"
-          class="filter"
-        />
-      </div>
-      <reactive-list
-        componentId="SearchResult"
-        dataField="original_title.raw"
-        className="result-list-container"
-        :pagination="true"
-        :from="0"
-        :size="5"
-        :react="{and: ['Ratings','Authors']}"
-      >
-        <div slot="renderData" slot-scope="{ item }">
-          <div class="flex book-content" key="item._id">
-            <img :src="item.image" alt="Book Cover" class="book-image" />
-            <div class="flex column justify-center ml20">
-              <div class="book-header">{{ item.original_title }}</div>
-                <div class="flex column justify-space-between">
-                    <div>
-                      <div>
-                        by <span class="authors-list">{{ item.authors }}</span>
-                      </div>
-                      <div class="ratings-list flex align-center">
-                        <span class="stars">
-                      <i v-for="(item, index) in Array(item.average_rating_rounded).fill('x')" class="fas fa-star" :key="index" />
-                    </span>
-                    <span class="avg-rating">({{item.average_rating}} avg)</span>
-                  </div>
-                </div>
-                <span class="pub-year">Pub {{item.original_publication_year}}</span>
-              </div>
-            </div>
-          </div>
+          componentId = "Sentiment"
+          dataField = "summary.sentiment"
+          class = "filter"
+          title = "Select Sentiment"
+          selectAllLabel = "All sentiments"
+          />
+        <multi-list
+          componentId = "Emotion"
+          dataField = "summary.emotion"
+          class = "filter"
+          title = "Select Emotion"
+          selectAllLabel = "All emotions"
+          />
+        <multi-list
+          componentId = "Intent"
+          dataField = "summary.intent"
+          class = "filter"
+          title = "Select Intent"
+          selectAllLabel = "All intents"
+          />
         </div>
-      </reactive-list>
+
+        <reactive-list
+          componentId = "SearchResult"
+          dataField = "productID"
+          className = "result-list-container"
+
+          :pagination = "true"
+          :from ="0"
+          :size = "5"
+          :react="{ and: ['Sentiment', 'Emotion', 'Intent','SearchKeyword']}"
+        >
+          <div slot = "renderData" slot-scope = "{ item }" class = "border-review">
+            <div class = "review-header"><div class="product-title">{{item.productID}}</div></div>
+            <div class = "bar-summary">
+              <span class = "sub-title">Sentiment:</span>
+                <span class = "member">{{item.summary.sentiment}}</span>
+              <span class = "sub-title">Emotion:</span>
+                <span class = "member">{{item.summary.emotion}}</span>
+              <span class = "sub-title">Intent:</span>
+                <span class = "member">{{item.summary.intent}}</span>
+            </div>
+            <div class = "review-content">{{item.content}}</div>
+            <div class = "review-url">{{item.url}}</div><br>
+          </div>
+        </reactive-list>
     </reactive-base>
   </div>
 </template>
@@ -60,26 +66,49 @@
 <script>
 import "./style.css";
 
-  export default {
-    name: "app",
-    data: function() {
-      return {
-        showBooks: window.innerWidth <= 768? true : false
-      };
-    },
-    methods: {
-      switchContainer: function() {
-        return (this.showBooks = !this.showBooks);
-      }
-    }
-  };
+export default {
+  
+}
+
+
 </script>
 
-<style>
+
+<style scoped>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
+
+.product-title{
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+}
+
+.border-review{
+  border-bottom-style : outset;
+}
+
+.bar-summary{
+
+}
+
+.sub-title{
+  font-weight: bolder;
+  color: gray;
+}
+
+.member{
+  margin-right: 4px;
+  color: green;
+}
+
+.review-url{
+  color: blue;
+}
+
 </style>
