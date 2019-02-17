@@ -1,0 +1,32 @@
+{
+"emotion":
+  {
+    "happy": 10,
+    "angry": 0,
+    "excited": 0,
+    "sad": 0,
+    "bored": 0,
+    "afraid": 0,
+    "disgust": 0
+  },
+
+"intent":
+  {
+    "compliment": 8,
+    "question": 1,
+    "spam": 1,
+    "suggestion": 0,
+    "compliment": 0
+  },
+
+"keywordCloud": ["nice", "quick delivery", "easy to use", "great product", "interesting", "normal"],
+
+"sentiment":
+  {
+    "positive": 9,
+    "neutral": 1,
+    "negative": 0
+  },
+  
+"totalreviews": 10
+}
