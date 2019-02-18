@@ -34,8 +34,8 @@ router.get('/dashboard', function(req, res, next)
 {
   if(!req.session.bIsLogined)
   {
-    //res.redirect('/');
-    //return false;
+    res.redirect('/');
+    return false;
   }
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 })
@@ -46,8 +46,8 @@ router.get('/summary', function(req, res, next)  // GET summary page
   // Access control
   if(!req.session.bIsLogined)
   {
-    //res.redirect('/');
-    //return false;
+    res.redirect('/');
+    return false;
   }
   console.log('summary page');
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
@@ -58,17 +58,10 @@ router.post('/summary', function(req, res, next) // POST summary page
   // Access control
   if(!req.session.bIsLogined)
   {
-    //res.redirect('/');
-    //return false;
+    res.redirect('/');
+    return false;
   }
 
-  /** Send submitted file to models *
-  var spawn = require("child_process").spawn;
-  var process = spawn('python', ['./testmodel.py', currentPath+'\\'+datafile]);
-  process.stdout.on('data', function(data){
-    console.log('data: '+data);
-  });
-  */
   var currentPath = path.join(__dirname, '../uploads');
   fs.readdir(currentPath, function(err, files)
   {
@@ -83,8 +76,6 @@ router.post('/summary', function(req, res, next) // POST summary page
     var spawn = require("child_process").spawn;
     var process = spawn('python', ['./testmodel.py', currentPath+'\\'+datafile]);
   });
-
-  /** Show result data */
 });
 
 router.get('/search', function(req, res, next)  // GET search page
