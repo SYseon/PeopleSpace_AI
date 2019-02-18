@@ -101,6 +101,7 @@
           {{word}}
         </div>
 
+
       </div>
     </div>
 </template>
@@ -132,8 +133,8 @@ export default{
       // go to search Page
       window.location.pathname = '/search'
     },
-  }
 
+  }
 }
 </script>
 
@@ -226,3 +227,4 @@ export default{
     color: white;
   }
 </style>
+

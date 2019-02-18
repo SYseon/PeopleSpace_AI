@@ -20,12 +20,14 @@ let router = new Router({
         },
         {
             path: '/auth/login',
+
             name: 'login',
             component: Login,
 
         },
         {
             path: '/auth/register',
+
             name: 'register',
             component: Register,
             // meta: {
@@ -58,6 +60,7 @@ let router = new Router({
             // }
         },
         //{ path: '*', redirect: '/'},
+
         { path: '/search', name: 'search', component: Search },
     ]
 })
@@ -94,6 +97,7 @@ router.beforeEach((to, from, next) => {
     //     next()
     // }
     const publicPages = ['/','/auth/login','/auth/register'];
+
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 
