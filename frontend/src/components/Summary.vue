@@ -1,7 +1,7 @@
 <template>
     <div class = "big-board">
       <div class = "big-img"></div>
-      <div class = "main-board">
+      <div class = "main-board" v-if="summaryResult.length != 0">
 
         <div class = "grid-container">
 
@@ -11,13 +11,14 @@
 
           <div class = "grid-sub-header">
             <div class = "wrapper">
+                <button class="btn-home" v-on:click="gotoHome()">Go to Home</button>
                 <button class="btn-search" v-on:click="gotoSearch()">Go to Search</button>
             </div>
           </div>
 
           <div class = "grid-number">
             <span class="title">Total review number:</span>
-            <span class="content" style="color:black">{{summaryResult.totalreviews}}</span>
+            <span class="content" style="color:black">{{ summaryResult.totalreviews }}</span>
           </div>
 
           <div class = "grid-sentiment">
@@ -25,25 +26,25 @@
             <table class="table-results">
               <tr>
                 <td>Positive</td>
-                <td class = "content">{{ summaryResult.sentiment.positive }}</td>
+                <td class = "content">{{ ratio_sentiment('positive') }}</td>
               </tr>
               <tr>
                 <td>Neutral</td>
-                <td class = "content">{{ summaryResult.sentiment.neutral }}</td>
+                <td class = "content">{{ ratio_sentiment('neutral') }}</td>
               </tr>
               <tr>
                 <td>Negative</td>
-                <td class = "content">{{ summaryResult.sentiment.neutral }}</td>
+                <td class = "content">{{ ratio_sentiment('negative') }}</td>
               </tr>
             </table>
           </div>
 
-          <div class = "grid-emotion">
+          <div  class = "grid-emotion">
             <div class="title">Emotion</div>
             <table class="table-results">
               <tr>
                 <td>Happy</td>
-                <td class = "content">{{ summaryResult.emotion.happy }}</td>
+                <td class = "content">{{ ratio_emotion('happy') }}</td>
               </tr>
               <tr>
                 <td>Excited</td>
@@ -77,28 +78,30 @@
             <table class="table-results">
               <tr>
                 <td>Compliment</td>
-                <td class = "content">{{ summaryResult.intent.compliment }}</td>
+                <td class = "content">{{ ratio_intent('compliment') }}</td>
               </tr>
               <tr>
                 <td>Suggestion</td>
-                <td class = "content">{{ summaryResult.intent.suggestion }}</td>
+                <td class = "content">{{ ratio_intent('suggestion') }}</td>
               </tr>
               <tr>
                 <td>Question</td>
-                <td class = "content">{{ summaryResult.intent.question }}</td>
+                <td class = "content">{{ ratio_intent('question') }}</td>
               </tr>
               <tr>
                 <td>Spam</td>
-                <td class = "content">{{ summaryResult.intent.spam }}</td>
+                <td class = "content">{{ ratio_intent('spam') }}</td>
               </tr>
             </table>
           </div>
 
         </div>
 
-        <div class="title">The most frequent keyword</div>
-        <div v-for = "word in summaryResult.keywordCloud">
-          {{word}}
+        <div class = "wrapper">
+          <div class="title"><center>Keyword Frequency Ranking</center></div>
+          <div v-for = "word in summaryResult.keywordCloud">
+            {{word}}
+          </div>
         </div>
 
 
@@ -131,8 +134,30 @@ export default{
   methods: {
     gotoSearch(){
       // go to search Page
+
       window.location.pathname = '/search'
     },
+
+    gotoHome(){
+      window.location.pathname = '/dashboard'
+    },
+
+    ratio_sentiment: function(sent) {
+      return ((this.summaryResult.sentiment[sent])/(this.summaryResult.sentiment.positive+this.summaryResult.sentiment.neutral+this.summaryResult.sentiment.negative))
+    },
+
+    ratio_emotion: function(emo) {
+      return ((this.summaryResult.emotion[emo])/(this.summaryResult.emotion.happy +
+        this.summaryResult.emotion.exicted + this.summaryResult.emotion.bored +
+        this.summaryResult.emotion.afraid + this.summaryResult.emotion.sad +
+        this.summaryResult.emotion.angry + this.summaryResult.emotion.disgust))
+    },
+
+    ratio_intent: function(inte) {
+      return ((this.summaryResult.intent[inte])/(this.summaryResult.intent.compliment+this.summaryResult.intent.suggestion+this.summaryResult.intent.question+this.summaryResult.intent.spam))
+    },
+  }
+
 
   }
 }
@@ -145,7 +170,7 @@ export default{
     text-align: center;
     font-weight: bold;
     font-size: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
    }
   .grid-sub-header { grid-area: sub-header; margin-bottom: 15px; }
   .grid-number{ grid-area: grid-1; }
@@ -188,12 +213,12 @@ export default{
     transform: translate(-50%, -50%);
     z-index: 2;
     width: 80%;
-    height: 700px;
+    height: 750px;
     padding: 20px;
   }
 
-  .btn-show, .btn-search{
-    background-color: #1E90FF; /* Blue */
+  .btn-search, .btn-home{
+    background-color: #E42C2C; /* red */
     border: none;
     color: white;
     padding: 5px 5px;
@@ -204,8 +229,18 @@ export default{
     border-radius: 3px;
   }
 
-  .btn-search{
-    background-color: #E42C2C; /* Red */
+  .btn-home{
+    background-color: #1E90FF; /* Blue */
+  }
+
+  .btn-search:hover {
+    background-color: white;
+    color: red; /* Red */
+  }
+
+  .btn-home:hover{
+    background-color: white;
+    color: #1E90FF; /* Blue */
   }
 
   .title{
@@ -220,11 +255,20 @@ export default{
   .table-results{
     text-align: left;
     color: white;
+    margin-bottom: 10px;
   }
 
   .content{
     font-weight: bold;
     color: white;
+  }
+
+  .title{
+    margin-bottom: 10px;
+  }
+
+  .link-home{
+    font-size: 15px;
   }
 </style>
 

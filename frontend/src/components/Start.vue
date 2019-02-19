@@ -34,7 +34,7 @@
   .container-start{
     background-image: url("https://images.unsplash.com/photo-1434626881859-194d67b2b86f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=60");
     background-repeat: no-repeat;
-    height: 550px;
+    height: 800px;
     background-position: center;
     background-size: cover;
   }
