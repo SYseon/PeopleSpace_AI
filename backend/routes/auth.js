@@ -11,10 +11,10 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 /** MySQL */
 var sqlconn = mysql.createConnection({
-  host : 'marketingaidb.csiociym4gut.us-west-1.rds.amazonaws.com',
-  user : 'root',
-  password : '_PeopleSpace',
-  database : 'account'
+  host : '~~',
+  user : '~~',
+  password : '~~',
+  database : '~~'
 });
 sqlconn.connect();
 
