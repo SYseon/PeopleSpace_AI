@@ -17,10 +17,12 @@
             </div>
             <br>
             <div class = "form-group">
-                <button class="btn-login" type="submit" v-on:click="login()"> <!---------------------- ## -------------------------->
-                    Login
-                </button>
-                <button class="btn-register" v-on:click="register()">Register</button> <!---------------------- ## -------------------------->
+
+            <button class="btn-login" type="submit" v-on:click="login()">
+                Login
+            </button>
+            <button class="btn-register" v-on:click="register()">Register</button>
+
             </div>
             <br>
         </form>
@@ -30,7 +32,6 @@
 
 <script>
     export default {
-        props : ["nextUrl"],
         data(){
             return {
                 email : "",
@@ -38,42 +39,60 @@
             }
         },
         methods : {
-          /*
-            handleSubmit(e){
-                e.preventDefault()
-                if (this.password.length > 0) {
-                    this.$http.post('http://localhost:3000/auth/login', {
-                        email: this.email,
-                        password: this.password
-                    })
-                    .then(response => {
-                        let is_admin = response.data.user.is_admin
-                        localStorage.setItem('user',JSON.stringify(response.data.user))
-                        localStorage.setItem('jwt',response.data.token)
 
-                        if (localStorage.getItem('jwt') != null){
-                            this.$emit('loggedIn')
-                            if(this.$route.params.nextUrl != null){
-                                this.$router.push(this.$route.params.nextUrl)
-                            }
-                            else {
-                                this.$router.push('/dashboard');
-                            }
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error(error.response);
-                    });
-                }
-            },*/
-            login() { ///////////////////////////////////////////// ##
-              this.$http.post('http://localhost:3000/auth/login', {
+            // handleSubmit(e){
+            //     e.preventDefault()
+            //     if (this.password.length > 0) {
+            //         this.$http.post('http://localhost:3000/auth/login', {
+            //             email: this.email,
+            //             password: this.password
+            //         })
+            //         .then(response => {
+            //             let is_admin = response.data.user.is_admin
+            //             localStorage.setItem('user',JSON.stringify(response.data.user))
+            //             localStorage.setItem('jwt',response.data.token)
+            //
+            //             if (localStorage.getItem('jwt') != null){
+            //                 this.$emit('loggedIn')
+            //                 if(this.$route.params.nextUrl != null){
+            //                     this.$router.push(this.$route.params.nextUrl)
+            //                 }
+            //                 else {
+            //                     if(is_admin== 1){
+            //                         //this.$router.push('dashboard')
+            //                         window.location.href = '/dashboard'
+            //                     }
+            //                     else {
+            //                         //this.$router.push('dashboard')
+            //                         window.location.href = '/dashboard'
+            //                     }
+            //                 }
+            //             }
+            //             window.location.href = '/auth/login';
+            //         })
+            //         .catch(function (error) {
+            //             console.error(error.response);
+            //         });
+            //     }
+            // },
+
+            login() {
+              this.$http.post('/auth/login', {
                   email: this.email,
                   password: this.password
               })
+              .then((res) => {
+                //this.$route.router.go('/dashboard')
+                window.location.href = '/auth/login'
+                //let {authToken} = res.data
+                //vueRouter.redirect('/dashboard')
+              })
             },
-            register() {  /////////////////////////////////////////// ##
-                window.location.href= '/auth/register';
+
+            register() {
+              window.location.href = '/auth/register';
+
+
             }
         }
     }
@@ -120,6 +139,18 @@
 
   .btn-login{
     background-color: #1E90FF; /* Blue */
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 3px;
+  }
+
+  .btn-register{
+    background-color: #38CB7B; /* Green */
     border: none;
     color: white;
     padding: 5px 5px;
