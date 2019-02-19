@@ -185,7 +185,7 @@ import axios from 'axios';
   filter: blur(8px);
   -webkit-filter: blur(8px);
 
-  height: 550px;
+  height: 800px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
