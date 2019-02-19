@@ -9,6 +9,7 @@
           Please login, and enjoy our premier service.<br>
         </div>
         <p><button class="btn-login" v-on:click="login()">Get Started</button></p>
+
       </div>
     </div>
   </div>
@@ -16,13 +17,11 @@
 
 <script>
     export default {
-
       methods: {
         login() {
           window.location.pathname = '/auth/login'
         }
       }
-
     }
 </script>
 

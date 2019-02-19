@@ -53,6 +53,7 @@
                 {
                     let url = "http://localhost:3000/auth/register"
                     //if(this.is_admin != null || this.is_admin == 1) url = "http://localhost:3000/register-admin"
+
                     this.$http.post(url, {
                         name: this.name,
                         email: this.email,
@@ -71,6 +72,7 @@
                             else{
                                 this.$router.push('/auth/login')
                                 //window.location.pathname = '/auth/login';
+
                             }
                         }
                     })

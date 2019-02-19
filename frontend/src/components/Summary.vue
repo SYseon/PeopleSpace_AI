@@ -104,6 +104,7 @@
           </div>
         </div>
 
+
       </div>
     </div>
 </template>
@@ -157,6 +158,8 @@ export default{
     },
   }
 
+
+  }
 }
 </script>
 
@@ -268,3 +271,4 @@ export default{
     font-size: 15px;
   }
 </style>
+
