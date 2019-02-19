@@ -1,7 +1,7 @@
 <template>
     <div class = "big-board">
       <div class = "big-img"></div>
-      <div class = "main-board" v-if="summaryResult.length != 0">
+      <div class = "main-board">
 
         <div class = "grid-container">
 
@@ -13,93 +13,112 @@
             <div class = "wrapper">
                 <button class="btn-home" v-on:click="gotoHome()">Go to Home</button>
                 <button class="btn-search" v-on:click="gotoSearch()">Go to Search</button>
+                <button class="btn-show" v-on:click="bringResults()">Analyze</button>
+                <button
+                  :class="{
+                    'vue-loading-button': true,
+                    'default-styles': styled,
+                    'loading': loading,
+                  }"
+                  :disabled="loading"
+                  type="button"
+                  v-on:click="bringResults()"
+                >
+                  <slot>Submit</slot>
+                  <span class="spinner">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </span>
+                </button>
+
             </div>
           </div>
 
-          <div class = "grid-number">
+          <div class = "grid-number" v-if="summaryResult.length!=0">
             <span class="title">Total review number:</span>
-            <span class="content" style="color:black">{{ summaryResult.totalreviews }}</span>
+            <span class="content">{{ summaryResult.totalreviews }}</span>
           </div>
 
-          <div class = "grid-sentiment">
+          <div class = "grid-sentiment" v-if="summaryResult.length!=0">
             <div class="title">Sentiment</div>
             <table class="table-results">
               <tr>
                 <td>Positive</td>
-                <td class = "content">{{ ratio_sentiment('positive') }}</td>
+                <td class = "content">{{ ratio_sentiment('positive') }}%</td>
               </tr>
               <tr>
                 <td>Neutral</td>
-                <td class = "content">{{ ratio_sentiment('neutral') }}</td>
+                <td class = "content">{{ ratio_sentiment('neutral') }}%</td>
               </tr>
               <tr>
                 <td>Negative</td>
-                <td class = "content">{{ ratio_sentiment('negative') }}</td>
+                <td class = "content">{{ ratio_sentiment('negative') }}%</td>
               </tr>
             </table>
           </div>
 
-          <div  class = "grid-emotion">
+          <div  class = "grid-emotion" v-if="summaryResult.length!=0">
             <div class="title">Emotion</div>
             <table class="table-results">
               <tr>
                 <td>Happy</td>
-                <td class = "content">{{ ratio_emotion('happy') }}</td>
+                <td class = "content">{{ ratio_emotion('happy') }}%</td>
               </tr>
               <tr>
                 <td>Excited</td>
-                <td class = "content">{{ summaryResult.emotion.excited }}</td>
+                <td class = "content">{{ ratio_emotion('excited') }}%</td>
               </tr>
               <tr>
                 <td>Bored</td>
-                <td class = "content">{{ summaryResult.emotion.bored }}</td>
+                <td class = "content">{{ ratio_emotion('bored') }}%</td>
               </tr>
               <tr>
                 <td>Afraid</td>
-                <td class = "content">{{ summaryResult.emotion.afraid }}</td>
+                <td class = "content">{{ratio_emotion('afraid') }}%</td>
               </tr>
               <tr>
                 <td>Sad</td>
-                <td class = "content">{{ summaryResult.emotion.sad }}</td>
+                <td class = "content">{{ ratio_emotion('sad') }}%</td>
               </tr>
               <tr>
                 <td>Angry</td>
-                <td class = "content">{{ summaryResult.emotion.angry }}</td>
+                <td class = "content">{{ ratio_emotion('angry') }}%</td>
               </tr>
               <tr>
                 <td>Disgust</td>
-                <td class = "content">{{ summaryResult.emotion.disgust }}</td>
+                <td class = "content">{{ ratio_emotion('disgust') }}%</td>
               </tr>
             </table>
           </div>
 
-          <div class = "grid-intent">
+          <div class = "grid-intent" v-if="summaryResult.length!=0">
             <div class="title">Intent</div>
             <table class="table-results">
               <tr>
                 <td>Compliment</td>
-                <td class = "content">{{ ratio_intent('compliment') }}</td>
+                <td class = "content">{{ ratio_intent('compliment') }}%</td>
               </tr>
               <tr>
                 <td>Suggestion</td>
-                <td class = "content">{{ ratio_intent('suggestion') }}</td>
+                <td class = "content">{{ ratio_intent('suggestion') }}%</td>
               </tr>
               <tr>
                 <td>Question</td>
-                <td class = "content">{{ ratio_intent('question') }}</td>
+                <td class = "content">{{ ratio_intent('question') }}%</td>
               </tr>
               <tr>
                 <td>Spam</td>
-                <td class = "content">{{ ratio_intent('spam') }}</td>
+                <td class = "content">{{ ratio_intent('spam') }}%</td>
               </tr>
             </table>
           </div>
-
         </div>
 
-        <div class = "wrapper">
+        <div id="title-wrapper" class = "grid-key" v-if="summaryResult.length!=0">
           <div class="title"><center>Keyword Frequency Ranking</center></div>
-          <div v-for = "word in summaryResult.keywordCloud">
+          <div v-for = "word in summaryResult.keywordCloud" style="text-align:center">
             {{word}}
           </div>
         </div>
@@ -109,6 +128,8 @@
 </template>
 
 <script>
+import './button-style.css';
+
 export default{
   name: 'app',
   data() {
@@ -117,17 +138,27 @@ export default{
     }
   },
 
+  props: {
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    styled: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
+  },
+
   created() {
-    this.axios.post('http://localhost:3000/summary')
-    .then( (res) => {
-      this.summaryResult = res.data
-
-      // const myObjStr = JSON.stringify(res.data)
-      // this.summaryResult = JSON.parse(myObjStr)
-
-      console.log(res)
-      console.log(this.summaryResult.keywordCloud[0]) // the most frequent keywordCloud
-    })
+    // this.axios.post('http://localhost:3000/summary')
+    // .then( (res) => {
+    //   this.axios.post('http://localhost:3000/summary/getresult')
+    //   .then((resultRes) => {
+    //     this.summaryResult = resultRes.data
+    //   })
+    // })
   },
 
   methods: {
@@ -137,23 +168,30 @@ export default{
       window.location.pathname = '/search'
     },
 
+    bringResults(){
+      this.axios.post('http://localhost:3000/summary')
+      .then( (res) => {
+        this.axios.post('http://localhost:3000/summary/getresult')
+        .then((resultRes) => {
+          this.summaryResult = resultRes.data
+        })
+      })
+    },
+
     gotoHome(){
       window.location.pathname = '/dashboard'
     },
 
     ratio_sentiment: function(sent) {
-      return ((this.summaryResult.sentiment[sent])/(this.summaryResult.sentiment.positive+this.summaryResult.sentiment.neutral+this.summaryResult.sentiment.negative))
+      return (Math.floor(this.summaryResult.sentiment[sent]*100))
     },
 
     ratio_emotion: function(emo) {
-      return ((this.summaryResult.emotion[emo])/(this.summaryResult.emotion.happy +
-        this.summaryResult.emotion.exicted + this.summaryResult.emotion.bored +
-        this.summaryResult.emotion.afraid + this.summaryResult.emotion.sad +
-        this.summaryResult.emotion.angry + this.summaryResult.emotion.disgust))
+      return (Math.floor(this.summaryResult.emotion[emo]*100))
     },
 
     ratio_intent: function(inte) {
-      return ((this.summaryResult.intent[inte])/(this.summaryResult.intent.compliment+this.summaryResult.intent.suggestion+this.summaryResult.intent.question+this.summaryResult.intent.spam))
+      return (Math.floor(this.summaryResult.intent[inte]*100))
     },
   }
 
@@ -186,6 +224,8 @@ export default{
       'grid-2 grid-3 grid-4';
     grid-gap: 10px;
     padding: 10px;
+    border-bottom-style: outset;
+    border-bottom-color: white;
   }
 
   .big-img{
@@ -210,11 +250,11 @@ export default{
     transform: translate(-50%, -50%);
     z-index: 2;
     width: 80%;
-    height: 750px;
+    height: 760px;
     padding: 20px;
   }
 
-  .btn-search, .btn-home{
+  .btn-search, .btn-home, .btn-show{
     background-color: #E42C2C; /* red */
     border: none;
     color: white;
@@ -224,6 +264,10 @@ export default{
     display: inline-block;
     font-size: 14px;
     border-radius: 3px;
+  }
+
+  .btn-show{
+    background-color: green;
   }
 
   .btn-home{
@@ -243,6 +287,7 @@ export default{
   .title{
     text-align: left;
     font-weight: bold;
+    font-size: 20px;
   }
 
   .wrapper{
@@ -257,7 +302,7 @@ export default{
 
   .content{
     font-weight: bold;
-    color: white;
+    margin-left: 10px;
   }
 
   .title{
@@ -266,5 +311,9 @@ export default{
 
   .link-home{
     font-size: 15px;
+  }
+
+  #title-wrapper{
+    margin-top: 10px;
   }
 </style>
