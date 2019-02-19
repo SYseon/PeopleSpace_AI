@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var logger = require('morgan');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
@@ -30,6 +31,7 @@ app.use(session({
   saveUninitialized: true,
   //cookie: { secure: true }
 }));
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);

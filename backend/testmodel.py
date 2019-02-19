@@ -1,14 +1,15 @@
 import pandas as pd
+import numpy as np
 import sys
 import numpy as np
 import random
 import string
 import json
-import requests
-load_path = "testreview2.csv"
+load_path = "testreview.csv"
 save_path = ""
 
 data = pd.read_csv(sys.argv[1])
+#data = pd.read_csv(load_path)
 #data.columns = ['review', 'sentiment','intent' ,'emotion']
 #emotion_json = data['emotion'].value_counts().to_json()
 #sentiment_json = data['sentiment'].value_counts().to_json()
@@ -19,7 +20,8 @@ productSite = ['samsung', 'apple', 'hp', 'asus', 'acer', 'msi']
 sourceSite = ['amazon', 'ebay']
 urlList = ['https://www.amazon.com', 'https://www.ebay.com']
 
-resultData = []
+userEmail = sys.argv[2]    # the email of user who search the data
+resultData = np.empty((0))
 idCount = 10
 
 data.columns = ['0']
@@ -53,6 +55,7 @@ for i in data['0']:
     }
 
     result = {
+        "userID": userEmail,
         "reviewID": reviewID,
         "productID": productID,
         "sourceID": sourceID,
@@ -77,10 +80,11 @@ for i in data['0']:
         }
     }
     idCount += 1
-    resultData.append(bulkHead)
-    resultData.append(result)
+    resultData = np.append(resultData, bulkHead)
+    resultData = np.append(resultData, result)
 
 sys.stdout.flush()
-#resultData = json.dumps(resultData)
-print(resultData)
-r = requests.post('http://localhost:3000/summary/getmodelresult', json=resultData)
+resultData = resultData.tolist()
+resultJson = json.dumps(resultData)
+f = open('resultJson.json', 'w')
+f.write(resultJson)
