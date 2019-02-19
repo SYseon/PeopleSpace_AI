@@ -1,6 +1,5 @@
 <template>
     <div class = "big-board">
-      <div class = "big-img"></div>
       <div class = "main-board">
 
         <div class = "grid-container">
@@ -14,24 +13,14 @@
                 <button class="btn-home" v-on:click="gotoHome()">Go to Home</button>
                 <button class="btn-search" v-on:click="gotoSearch()">Go to Search</button>
                 <button class="btn-show" v-on:click="bringResults()">Analyze</button>
-                <button
-                  :class="{
-                    'vue-loading-button': true,
-                    'default-styles': styled,
-                    'loading': loading,
-                  }"
-                  :disabled="loading"
-                  type="button"
-                  v-on:click="bringResults()"
+                <VueLoadingButton
+                  aria-label="Analyze Review"
+                  class="button"
+                  id="btn-loading"
+                  @click.native="bringResults"
+                  :loading="isLoading"
+                  >Analyze</VueLoadingButton
                 >
-                  <slot>Submit</slot>
-                  <span class="spinner">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </span>
-                </button>
 
             </div>
           </div>
@@ -128,43 +117,20 @@
 </template>
 
 <script>
-import './button-style.css';
+import VueLoadingButton from 'vue-loading-button';
 
 export default{
   name: 'app',
   data() {
     return {
-      summaryResult: [] //get summary result from backend
+      summaryResult: [], //get summary result from backend
+      isLoading: false,
     }
-  },
-
-  props: {
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    styled: {
-      type: Boolean,
-      required: false,
-      default: true
-    }
-  },
-
-  created() {
-    // this.axios.post('http://localhost:3000/summary')
-    // .then( (res) => {
-    //   this.axios.post('http://localhost:3000/summary/getresult')
-    //   .then((resultRes) => {
-    //     this.summaryResult = resultRes.data
-    //   })
-    // })
   },
 
   methods: {
     gotoSearch(){
       // go to search Page
-
       window.location.pathname = '/search'
     },
 
@@ -174,11 +140,13 @@ export default{
         this.axios.post('http://localhost:3000/summary/getresult')
         .then((resultRes) => {
           this.summaryResult = resultRes.data
+          this.isLoading = true
+          setTimeout( ()=> (this.isLoading = false), 1000)
         })
       })
     },
 
-    gotoHome(){
+    gotoHome() {
       window.location.pathname = '/dashboard'
     },
 
@@ -193,6 +161,10 @@ export default{
     ratio_intent: function(inte) {
       return (Math.floor(this.summaryResult.intent[inte]*100))
     },
+  },
+
+  components: {
+    VueLoadingButton
   }
 
 }
@@ -250,11 +222,11 @@ export default{
     transform: translate(-50%, -50%);
     z-index: 2;
     width: 80%;
-    height: 760px;
+    height: 780px;
     padding: 20px;
   }
 
-  .btn-search, .btn-home, .btn-show{
+  .btn-search, .btn-home, .btn-show, #btn-loading{
     background-color: #E42C2C; /* red */
     border: none;
     color: white;
@@ -268,6 +240,11 @@ export default{
 
   .btn-show{
     background-color: green;
+  }
+
+  #btn-loading{
+    background-color: green;
+    padding: 0px;
   }
 
   .btn-home{
