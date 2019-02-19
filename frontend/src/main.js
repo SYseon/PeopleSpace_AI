@@ -4,19 +4,23 @@ import Vue from 'vue'
 import ReactiveSearch from '@appbaseio/reactivesearch-vue'
 import App from './App'
 import router from './router'
-import Axios from 'axios'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import VueLoadingButton from 'vue-loading-button'
 
-Vue.prototype.$http = Axios;
+Vue.prototype.$http = axios
 // we can now use axios like 'this.$http'
 
 Vue.config.productionTip = false
 
 Vue.use(ReactiveSearch)
+Vue.use(VueAxios, axios)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-})
+  components: { App, VueLoadingButton },
+  template: '<App/>',
+  render: h => h(App)
+}).$mount('#app')
