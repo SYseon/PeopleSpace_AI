@@ -11,9 +11,9 @@ router.use(bodyParser.urlencoded({extended: false}));
 
 /** MySQL */
 var sqlconn = mysql.createConnection({
-  host : 'marketingaidb.csiociym4gut.us-west-1.rds.amazonaws.com',
+  host : 'localhost',
   user : 'root',
-  password : '_PeopleSpace',
+  password : '1q2w3e4r',
   database : 'account'
 });
 sqlconn.connect();
@@ -45,44 +45,33 @@ router.post('/login', function(req, res, next)  // POST login page
   var inputID = req.body.email; // change to "inputID = req.body.email";
   var inputPW = req.body.password; // change to "inputPW = req.body.accountPassword";
   // Login
-
-  //return res.json({authToken : "test"});
   sqlconn.query(selectQuery, function(err, rows, fields)
   {
     if(err) {console.log(err);}
     else
     {
       var bIsIDCorrect = false;
-      var accountData;
       // check ID & PW for login
       for(var i in rows)
       {
         if(inputID == rows[i].email)
         {
           bIsIDCorrect = true;
-          accountData = rows[i];
-          break;
+          var accountData = rows[i];
+          hasher({password: inputPW, salt: rows[i].salt}, function(err, pass, salt, hash)
+          {
+            if(hash == accountData.userPassword) // Login success
+            {
+              console.log('login success');
+              req.session.bIsLogined = true;
+              req.session.loginAccount = inputID;
+              req.session.save(function() {res.redirect('/dashboard');})
+            }
+            else {console.log('login failure'); res.send(`alert('do not match!')`);}
+          });
         }
       }
-      if(bIsIDCorrect)
-      {
-        hasher({password: inputPW, salt: accountData.salt}, function(err, pass, salt, hash)
-        {
-          if(hash == accountData.userPassword) // Login success
-          {
-            console.log('login success');
-            req.session.bIsLogined = true;
-            req.session.loginAccount = inputID;
-            req.session.save(function() {
-              //res.json({authToken: req.sessionID});
-              console.log(req.session);
-              res.redirect('/dashboard');
-            });
-          }
-          else {console.log('login failure'); res.send('fail');}
-        });
-      }
-      else {console.log('login failure'); res.send('fail');}
+      if(!bIsIDCorrect) {console.log('login failure'); res.redirect('/auth/login');}
     }
   });
 });
@@ -98,9 +87,7 @@ router.post('/logout', function(req, res)
   }
   delete req.session.bIsLogined;
   delete req.session.loginAccount;
-  req.session.save(function() {
-    res.redirect('/');
-  });
+  req.session.save(function() {res.redirect('/dashboard');})
 });
 
 /** Register Page */
